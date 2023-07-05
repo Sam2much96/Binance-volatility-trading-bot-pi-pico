@@ -478,7 +478,7 @@ if __name__ == '__main__':
     parsed_creds = load_config(creds_file)
 
     # Default no debugging
-    DEBUG = False
+    DEBUG = True
 
     # Load system vars
     TEST_MODE = parsed_config['script_options']['TEST_MODE']
@@ -557,7 +557,7 @@ if __name__ == '__main__':
     if not TEST_MODE:
         if not args.notimeout: # if notimeout skip this (fast for dev tests)
             print('WARNING: You are using the Mainnet and live funds. Waiting 30 seconds as a security measure')
-            time.sleep(30)
+            time.sleep(3)
 
     signals = glob.glob("signals/*.exs")
     for filename in signals:

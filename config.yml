@@ -2,7 +2,7 @@
 script_options:
   # Switch between testnet and mainnet
   # Setting this to False will use REAL funds, use at your own risk
-  TEST_MODE: True
+  TEST_MODE: False
   LOG_TRADES: True
   LOG_FILE: 'trades.txt'
 
@@ -27,13 +27,13 @@ trading_options:
   FIATS:
     - EURUSDT
     - GBPUSDT
-    - JPYUSDT
+    - NGNUSDT
     - USDUSDT
     - DOWN
     - UP
 
   # Maximum number of trade 'slots' at any time (your USDT balance must be at least MAX_COINS * QUANTITY)
-  MAX_COINS: 7
+  MAX_COINS: 1
 
   # the amount of time in MINUTES to calculate the difference from the current price (minimum: 1).
   TIME_DIFFERENCE: 2
@@ -43,13 +43,13 @@ trading_options:
   RECHECK_INTERVAL: 10
 
   # the difference in % between the first and second checks for the price.
-  CHANGE_IN_PRICE: 10
+  CHANGE_IN_PRICE: 5
 
   # define in % when to sell a coin that's not making a profit.
-  STOP_LOSS: 5
+  STOP_LOSS: 3
 
   # define in % when to take profit on a profitable coin.
-  TAKE_PROFIT: .8
+  TAKE_PROFIT: .7
 
   # Use custom tickers.txt list for filtering pairs.
   CUSTOM_LIST: True
