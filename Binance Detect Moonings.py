@@ -55,6 +55,21 @@ from helpers.handle_creds import (
     load_correct_creds, test_api_key
 )
 
+# Email Bot
+from umail import SMTP
+
+
+    # Email Bot
+global mail_bot
+mailbot = SMTP(
+                        host='smtp.gmail.com',
+                        port=465,
+                        ssl= True,
+                        username="sam2much96@gmail.com",
+                        password="lxexzybwjvdxyrdt"
+                        )
+        
+
 
 # for colourful logging to the console
 class txcolors:
@@ -294,6 +309,7 @@ def buy():
     volume, last_price = convert_volume()
     orders = {}
 
+
     for coin in volume:
 
         # only buy if the there are no active trades on the coin
@@ -310,6 +326,7 @@ def buy():
                 # Log trade
                 if LOG_TRADES:
                     write_log(f"Buy : {volume[coin]} {coin} - {last_price[coin]['price']}")
+                    
 
                 continue
 
@@ -458,6 +475,14 @@ def write_log(logline):
     timestamp = datetime.now().strftime("%d/%m %H:%M:%S")
     with open(LOG_FILE,'a+') as f:
         f.write(timestamp + ' ' + logline + '\n')
+
+        mail_bot.to("inhumanityarts@gmail.com")
+        mail_bot.write("Subject: " + f"{coin}\r\n")
+        # Body of the Email
+        mail_bot.write(f"Buy : {volume[coin]} {coin} - {last_price[coin]['price']}")
+        mail_bot.send()
+     
+           
 
 if __name__ == '__main__':
 
