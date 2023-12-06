@@ -52,23 +52,12 @@ from helpers.parameters import (
 
 # Load creds modules
 from helpers.handle_creds import (
-    load_correct_creds, test_api_key
+    load_correct_creds, load_email_creds, test_api_key
 )
 
 # Email Bot
 from umail import SMTP
 
-
-    # Email Bot
-global mail_bot
-mailbot = SMTP(
-                        host='smtp.gmail.com',
-                        port=465,
-                        ssl= True,
-                        username="sam2much96@gmail.com",
-                        password="lxexzybwjvdxyrdt"
-                        )
-        
 
 
 # for colourful logging to the console
@@ -499,6 +488,8 @@ if __name__ == '__main__':
 
     config_file = args.config if args.config else DEFAULT_CONFIG_FILE
     creds_file = args.creds if args.creds else DEFAULT_CREDS_FILE
+
+    # Loads Config file using a json parse format
     parsed_config = load_config(config_file)
     parsed_creds = load_config(creds_file)
 
@@ -534,6 +525,26 @@ if __name__ == '__main__':
 
     # Load creds for correct environment
     access_key, secret_key = load_correct_creds(parsed_creds)
+    email_server, email_pass, email_receipient = load_email_creds(parsed_creds)
+
+
+    # Email Bot
+    global mail_bot
+
+    mail_bot= SMTP(
+                    host='smtp.gmail.com',
+                    port=465,
+                    ssl= True,
+                    username= email_server,
+                    password= email_pass
+                    )
+
+
+    mail_bot.to(email_receipient) #my_email
+    mail_bot.write("Subject: " + f"{email_receipient}\r\n")
+    
+          
+        
 
     if DEBUG:
         print(f'loaded config below\n{json.dumps(parsed_config, indent=4)}')
@@ -575,7 +586,9 @@ if __name__ == '__main__':
     # if saved coins_bought json file exists and it's not empty then load it
     if os.path.isfile(coins_bought_file_path) and os.stat(coins_bought_file_path).st_size!= 0:
         with open(coins_bought_file_path) as file:
-                coins_bought = json.load(file)
+                coins_bought = json.load(file)  
+                mail_bot.write(f"""Dear {"_name"}, {coins_bought}""")
+                mail_bot.send()
 
     print('Press Ctrl-Q to stop the script')
 
@@ -614,7 +627,7 @@ if __name__ == '__main__':
         print(e)
 
     # seed initial prices
-    get_price()
+    seed= get_price()
     READ_TIMEOUT_COUNT=0
     CONNECTION_ERROR_COUNT = 0
     while True:
@@ -622,6 +635,9 @@ if __name__ == '__main__':
             orders, last_price, volume = buy()
             update_portfolio(orders, last_price, volume)
             coins_sold = sell_coins()
+            mail_bot.write(f"""Dear {seed}, {orders},{last_price, }{volume} {coins_sold}""")
+            mail_bot.send()
+
             remove_from_portfolio(coins_sold)
         except ReadTimeout as rt:
             READ_TIMEOUT_COUNT += 1

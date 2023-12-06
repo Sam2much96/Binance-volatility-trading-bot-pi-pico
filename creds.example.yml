@@ -10,3 +10,7 @@ prod:
   access_key: replace_me
   secret_key: replace_me
 
+email:
+  stmp_username: replace_me
+  stmp_password: replace_me
+  reciepient: replace_me
